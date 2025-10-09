@@ -45,18 +45,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ matrix.images.name }}
-
       - name: Build and push image tag ${{ needs.version.outputs.version_resolved }}
         uses: docker/build-push-action@v6.18.0
         with:
           context: ${{ matrix.images.git_repo }}#${{ matrix.images.git_tag }}
           platforms: linux/amd64,linux/arm64
           push: ${{ github.ref == 'refs/heads/main' }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: |
+            org.opencontainers.image.source=${{ matrix.images.git_repo }}
+            org.opencontainers.image.version=${{ matrix.images.git_tag }}
+            org.opencontainers.image.builder=container-registry-manager
           tags: |
             ${{ env.REGISTRY }}/${{ matrix.images.name }}:${{ matrix.images.tag }}
