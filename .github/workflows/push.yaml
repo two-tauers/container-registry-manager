@@ -1,10 +1,11 @@
 ---
-name: Build from upstream repos
+name: Push images to ghcr.io
 
 on:
   push:
     paths-ignore:
       - README.md
+      - LICENSE
 
 env:
   REGISTRY: ghcr.io
