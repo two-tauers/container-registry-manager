@@ -55,7 +55,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push image tag ${{ needs.version.outputs.version_resolved }}
+      - name: Build and push image
         uses: docker/build-push-action@v6.18.0
         with:
           context: ${{ matrix.images.git_repo }}#${{ matrix.images.git_tag }}
