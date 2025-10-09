@@ -1,0 +1,8 @@
+[
+    {
+        "git_repo": "https://github.com/elastic/ottl-playground.git",
+        "git_tag": "main",
+        "name": "ottl-playground",
+        "tag": "main"
+    }
+]
