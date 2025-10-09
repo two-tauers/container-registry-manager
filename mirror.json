@@ -1,0 +1,7 @@
+[
+    {
+        "name": "opentelemetry-collector-contrib",
+        "repo": "ghcr.io/open-telemetry/opentelemetry-collector-releases",
+        "tag": "0.118.0"
+    }
+]
