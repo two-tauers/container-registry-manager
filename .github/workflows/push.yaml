@@ -24,11 +24,11 @@ jobs:
       - id: build-matrix
         run: |
           TASKS=$(echo $(cat ${{ env.BUILD_MATRIX_FILE }}) | sed 's/ //g' )
-          echo "::set-output name=matrix::$TASKS"
+          echo "matrix=$TASKS" >> $GITHUB_OUTPUT
       - id: mirror-matrix
         run: |
           TASKS=$(echo $(cat ${{ env.MIRROR_MATRIX_FILE }}) | sed 's/ //g' )
-          echo "::set-output name=matrix::$TASKS"
+          echo "matrix=$TASKS" >> $GITHUB_OUTPUT
 
   build:
     needs: [ fetch-lists ]
