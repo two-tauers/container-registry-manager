@@ -15,6 +15,7 @@ env:
 jobs:
 
   fetch-lists:
+    namd: Load json lists
     runs-on: ubuntu-latest
     outputs:
       build-matrix: ${{ steps.build-matrix.outputs.matrix }}
@@ -31,6 +32,7 @@ jobs:
           echo "matrix=$TASKS" >> $GITHUB_OUTPUT
 
   build:
+    name: Build ${{ matrix.images.name }}:${{ matrix.images.tag }}
     needs: [ fetch-lists ]
     strategy:
       matrix:
@@ -69,6 +71,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.images.name }}:${{ matrix.images.tag }}
 
   mirror:
+    name: Mirror ${{ matrix.images.name }}:${{ matrix.images.tag }}
     needs: [ fetch-lists ]
     strategy:
       matrix:
