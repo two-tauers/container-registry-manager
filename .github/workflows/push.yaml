@@ -16,17 +16,19 @@ jobs:
 
   fetch-lists:
     name: Load json lists
-    runs-on: ubuntu-latest
+    runs-on: ars
     outputs:
       build-matrix: ${{ steps.build-matrix.outputs.matrix }}
       mirror-matrix: ${{ steps.mirror-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v3
       - id: build-matrix
+        name: Load ${{ env.BUILD_MATRIX_FILE }}
         run: |
           TASKS=$(echo $(cat ${{ env.BUILD_MATRIX_FILE }}) | sed 's/ //g' )
           echo "matrix=$TASKS" >> $GITHUB_OUTPUT
       - id: mirror-matrix
+        name: Load ${{ env.MIRROR_MATRIX_FILE }}
         run: |
           TASKS=$(echo $(cat ${{ env.MIRROR_MATRIX_FILE }}) | sed 's/ //g' )
           echo "matrix=$TASKS" >> $GITHUB_OUTPUT
@@ -40,7 +42,7 @@ jobs:
     permissions:
       packages: write
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: ars
     steps:
       - uses: actions/checkout@v3
 
@@ -66,7 +68,7 @@ jobs:
           labels: |
             org.opencontainers.image.source=${{ matrix.images.git_repo }}
             org.opencontainers.image.version=${{ matrix.images.git_tag }}
-            org.opencontainers.image.builder=container-registry-manager
+            org.opencontainers.image.built_by=https://github.com/two-tauers/container-registry-manager
           tags: |
             ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.images.name }}:${{ matrix.images.tag }}
 
@@ -79,7 +81,7 @@ jobs:
     permissions:
       packages: write
       contents: read
-    runs-on: ubuntu-latest
+    runs-on: ars
     steps:
       - uses: actions/checkout@v3
 
