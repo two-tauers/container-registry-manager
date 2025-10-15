@@ -16,7 +16,7 @@ jobs:
 
   fetch-lists:
     name: Load json lists
-    runs-on: ars
+    runs-on: two-tauers
     outputs:
       build-matrix: ${{ steps.build-matrix.outputs.matrix }}
       mirror-matrix: ${{ steps.mirror-matrix.outputs.matrix }}
@@ -42,7 +42,7 @@ jobs:
     permissions:
       packages: write
       contents: read
-    runs-on: ars
+    runs-on: two-tauers
     steps:
       - uses: actions/checkout@v3
 
@@ -81,7 +81,7 @@ jobs:
     permissions:
       packages: write
       contents: read
-    runs-on: ars
+    runs-on: two-tauers
     steps:
       - uses: actions/checkout@v3
 
