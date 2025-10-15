@@ -65,6 +65,7 @@ jobs:
         uses: docker/build-push-action@v6.18.0
         with:
           context: ${{ matrix.images.git_repo }}#${{ matrix.images.git_tag }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           platforms: linux/amd64,linux/arm64
           push: ${{ github.ref == 'refs/heads/main' }}
           labels: |
