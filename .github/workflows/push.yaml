@@ -15,22 +15,27 @@ env:
 jobs:
 
   fetch-lists:
-    runs-on: ubuntu-latest
+    name: Load json lists
+    runs-on:
+      group: two-tauers
     outputs:
       build-matrix: ${{ steps.build-matrix.outputs.matrix }}
       mirror-matrix: ${{ steps.mirror-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v3
       - id: build-matrix
+        name: Load ${{ env.BUILD_MATRIX_FILE }}
         run: |
           TASKS=$(echo $(cat ${{ env.BUILD_MATRIX_FILE }}) | sed 's/ //g' )
-          echo "::set-output name=matrix::$TASKS"
+          echo "matrix=$TASKS" >> $GITHUB_OUTPUT
       - id: mirror-matrix
+        name: Load ${{ env.MIRROR_MATRIX_FILE }}
         run: |
           TASKS=$(echo $(cat ${{ env.MIRROR_MATRIX_FILE }}) | sed 's/ //g' )
-          echo "::set-output name=matrix::$TASKS"
+          echo "matrix=$TASKS" >> $GITHUB_OUTPUT
 
   build:
+    name: Build ${{ matrix.images.name }}:${{ matrix.images.tag }}
     needs: [ fetch-lists ]
     strategy:
       matrix:
@@ -38,7 +43,8 @@ jobs:
     permissions:
       packages: write
       contents: read
-    runs-on: ubuntu-latest
+    runs-on:
+      group: two-tauers
     steps:
       - uses: actions/checkout@v3
 
@@ -55,20 +61,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push image tag ${{ needs.version.outputs.version_resolved }}
+      - name: Build and push image
         uses: docker/build-push-action@v6.18.0
         with:
           context: ${{ matrix.images.git_repo }}#${{ matrix.images.git_tag }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           platforms: linux/amd64,linux/arm64
           push: ${{ github.ref == 'refs/heads/main' }}
           labels: |
             org.opencontainers.image.source=${{ matrix.images.git_repo }}
             org.opencontainers.image.version=${{ matrix.images.git_tag }}
-            org.opencontainers.image.builder=container-registry-manager
+            org.opencontainers.image.built_by=https://github.com/two-tauers/container-registry-manager
           tags: |
             ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.images.name }}:${{ matrix.images.tag }}
 
   mirror:
+    name: Mirror ${{ matrix.images.name }}:${{ matrix.images.tag }}
     needs: [ fetch-lists ]
     strategy:
       matrix:
@@ -76,7 +84,8 @@ jobs:
     permissions:
       packages: write
       contents: read
-    runs-on: ubuntu-latest
+    runs-on:
+      group: two-tauers
     steps:
       - uses: actions/checkout@v3
 
